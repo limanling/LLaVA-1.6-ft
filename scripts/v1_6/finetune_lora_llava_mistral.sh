@@ -5,7 +5,7 @@ deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path liuhaotian/llava-v1.6-mistral-7b \
     --version mistral_instruct \
-    --data_path combined_data.json \
+    --data_path /viscam/data/sceneVerse/preprocessed/ProcThor/all_data.json \
     --image_folder random_images \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \
