@@ -5,7 +5,7 @@ deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path liuhaotian/llava-v1.6-mistral-7b \
     --version mistral_instruct \
-    --data_path /viscam/data/sceneVerse/preprocessed/ProcThor/all_data.json \
+    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data.json \
     --image_folder random_images \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \
@@ -18,7 +18,7 @@ deepspeed llava/train/train_mem.py \
     --bf16 False \
     --fp16 True \
     --output_dir ./llava-lora-mistral \
-    --num_train_epochs 1 \
+    --num_train_epochs 1000000 \
     --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 1 \
     --gradient_accumulation_steps 1 \

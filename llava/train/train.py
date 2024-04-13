@@ -715,12 +715,6 @@ class LazySupervisedDataset(Dataset):
         self.data_args = data_args
         self.model_config = model_config
 
-        self.preprocessed_list_data_dict = []
-        from tqdm import tqdm
-        for i in tqdm(range(len(self.list_data_dict))):
-            data_dict = self.preprocess(i)
-            self.preprocessed_list_data_dict.append(data_dict)
-
     def __len__(self):
         return len(self.list_data_dict)
 
@@ -741,7 +735,7 @@ class LazySupervisedDataset(Dataset):
             length_list.append(cur_len)
         return length_list
 
-    def preprocess(self, i) -> Dict[str, torch.Tensor]:
+    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
         sources = self.list_data_dict[i]
         if isinstance(i, int):
             sources = [sources]
@@ -793,9 +787,6 @@ class LazySupervisedDataset(Dataset):
             crop_size = self.data_args.image_processor.crop_size
             data_dict['image'] = torch.zeros(3, crop_size['height'], crop_size['width'])
         return data_dict
-
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return self.preprocessed_list_data_dict[i]
 
 
 @dataclass
