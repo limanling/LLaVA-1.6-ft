@@ -5,7 +5,7 @@
 #SBATCH --partition=viscam
 #################
 #number of GPUs
-#SBATCH --gres=gpu:a6000:3
+#SBATCH --gres=gpu:a6000:1
 #SBATCH --cpus-per-task=4
 #SBATCH --account=viscam
 #################
@@ -56,7 +56,6 @@ conda activate layout
 echo "activated"
 
 export HOME=/svl/u/sunfanyun
-#./scripts/v1_6/finetune_lora_llava_mistral.sh
 ./scripts/v1_5/finetune_task_lora.sh
 
 echo "Done"

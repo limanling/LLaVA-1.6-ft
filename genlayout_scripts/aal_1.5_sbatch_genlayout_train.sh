@@ -58,7 +58,7 @@ echo "activated"
 export HOME=/svl/u/sunfanyun
 #./scripts/v1_6/finetune_lora_llava_mistral.sh
 cd $HOME/Genlayout
-./scripts/sbatch_train_data_preprocess.sh ProcThor
+#./scripts/sbatch_train_data_preprocess.sh ProcThor
 ./scripts/v1_5/finetune_task_lora.sh
 
 echo "Done"
