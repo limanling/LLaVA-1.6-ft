@@ -5,8 +5,9 @@ deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path lmsys/vicuna-13b-v1.5 \
     --version v1 \
-    --data_path ./playground/data/llava_v1_5_mix665k.json \
-    --image_folder ./playground/data \
+    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data.json \
+    --validation_data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data.json \
+    --image_folder / \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --pretrain_mm_mlp_adapter ./checkpoints/llava-v1.5-13b-pretrain/mm_projector.bin \
     --mm_projector_type mlp2x_gelu \
@@ -17,7 +18,7 @@ deepspeed llava/train/train_mem.py \
     --group_by_modality_length True \
     --bf16 True \
     --output_dir ./checkpoints/llava-v1.5-13b-lora \
-    --num_train_epochs 1 \
+    --num_train_epochs 5 \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
     --gradient_accumulation_steps 1 \

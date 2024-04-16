@@ -10,7 +10,7 @@
 #SBATCH --account=aal
 #################
 #set a job name
-#SBATCH --job-name="LLaVa finetuning"
+#SBATCH --job-name="v1.6 llava"
 #################
 #a file for job output, you can check job progress, append the job ID with %j to make it unique
 #SBATCH --output=../slurm_stdout/%j.out
@@ -56,7 +56,9 @@ conda activate layout
 echo "activated"
 
 export HOME=/svl/u/sunfanyun
-./scripts/v1_6/finetune_lora_llava_mistral.sh
+#./scripts/v1_6/finetune_lora_llava_mistral.sh
+cd $HOME/Genlayout
+./scripts/v1_5/finetune_task_lora.sh
 
 echo "Done"
 exit 0
