@@ -4,11 +4,12 @@ from llava.mm_utils import get_model_name_from_path
 from llava.eval.run_llava import eval_model
 
 # Path to your fine-tuned model
-fine_tuned_model_path = "/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/checkpoints/llava-v1.5-7b-task-lora"
+fine_tuned_model_path = "/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/checkpoints/llava-v1.5-7b-task-lora_v1"
 model_base = "liuhaotian/llava-v1.5-7b"
 #model_base = "liuhaotian/llava-v1.5-13b"
 
-#fine_tuned_model_path = "/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/llava-lora-mistral/"
+#fine_tuned_model_path = "/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/checkpoints/llava-v1.6-mistral-7b-llava-lora-mistral_v1"
+#model_base = "liuhaotian/llava-v1.6-mistral-7b"
 #model_base = "liuhaotian/llava-v1.6-34b"
 
 

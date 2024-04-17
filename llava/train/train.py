@@ -712,6 +712,7 @@ class LazySupervisedDataset(Dataset):
         rank0_print("Formatting inputs...Skip in lazy mode")
         self.tokenizer = tokenizer
         self.list_data_dict = list_data_dict
+        rank0_print("len(list_data_dict)", len(self.list_data_dict))
         self.data_args = data_args
         self.model_config = model_config
 

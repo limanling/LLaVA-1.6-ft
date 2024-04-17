@@ -56,9 +56,8 @@ conda activate layout
 echo "activated"
 
 export HOME=/svl/u/sunfanyun
-#./scripts/v1_6/finetune_lora_llava_mistral.sh
 cd $HOME/Genlayout
-./scripts/v1_5/finetune_task_lora.sh
+./scripts/v1_6/finetune_lora_llava_mistral.sh
 
 echo "Done"
 exit 0

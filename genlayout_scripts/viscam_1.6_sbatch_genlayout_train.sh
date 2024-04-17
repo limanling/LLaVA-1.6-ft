@@ -57,7 +57,6 @@ echo "activated"
 
 export HOME=/svl/u/sunfanyun
 ./scripts/v1_6/finetune_lora_llava_mistral.sh
-#./scripts/v1_5/finetune_task_lora.sh
 
 echo "Done"
 exit 0
