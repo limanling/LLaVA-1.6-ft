@@ -17,8 +17,6 @@ from llava.mm_utils import (
     get_model_name_from_path,
 )
 
-from PIL import Image
-
 import requests
 from PIL import Image
 from io import BytesIO
@@ -47,17 +45,18 @@ def load_images(image_files):
     return out
 
 
-def eval_model(args):
+def eval_model(args, tokenizer, model, image_processor):
     # Model
     disable_torch_init()
 
-    print('loading ...')
-    model_name = get_model_name_from_path(args.model_path)
-    tokenizer, model, image_processor, context_len = load_pretrained_model(
-        args.model_path, args.model_base, model_name
-    )
-    print('pretrain model loaded')
+    #print('loading ...')
+    #model_name = get_model_name_from_path(args.model_path)
+    #tokenizer, model, image_processor, context_len = load_pretrained_model(
+    #    args.model_path, args.model_base, model_name
+    #)
+    #print('pretrain model loaded')
 
+    model_name = args.model_name
     qs = args.query
     image_token_se = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN
     if IMAGE_PLACEHOLDER in qs:
@@ -127,7 +126,6 @@ def eval_model(args):
         )
 
     outputs = tokenizer.batch_decode(output_ids, skip_special_tokens=True)[0].strip()
-    print(outputs)
     return outputs
 
 

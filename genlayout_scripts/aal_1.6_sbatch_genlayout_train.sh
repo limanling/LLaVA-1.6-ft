@@ -33,7 +33,7 @@
 # --mem is memory per node; default is 4000 MB per CPU, remember to ask for enough mem to match your CPU request, since
 # sherlock automatically allocates 4 Gigs of RAM/CPU, if you ask for 8 CPUs you will get 32 Gigs of RAM, so either
 # leave --mem commented out or request >= to the RAM needed for your CPU request.  It will also accept mem. in units, ie "--mem=4G"
-#SBATCH --mem=32G
+#SBATCH --mem=64G
 #################
 # Have SLURM send you an email when the job ends or fails, careful, the email could end up in your clutter folder
 # Also, if you submit hundreds of jobs at once you will get hundreds of emails.

@@ -2,13 +2,14 @@
 
 #model_name=llava-v1.5-13b
 model_name=llava-v1.5-7b
+version=rotation_v2
 
 deepspeed --master_port 29600 llava/train/train_mem.py \
     --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path liuhaotian/$model_name \
     --version v1 \
-    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data_v2.json \
+    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/rotation_merged.json \
     --image_folder / \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \
@@ -18,7 +19,7 @@ deepspeed --master_port 29600 llava/train/train_mem.py \
     --image_aspect_ratio pad \
     --group_by_modality_length True \
     --bf16 True \
-    --output_dir ./checkpoints/$model_name-task-lora_v2 \
+    --output_dir ./checkpoints/$model_name-task-lora_$version \
     --num_train_epochs 1 \
     --per_device_train_batch_size 16 \
     --per_device_eval_batch_size 4 \
