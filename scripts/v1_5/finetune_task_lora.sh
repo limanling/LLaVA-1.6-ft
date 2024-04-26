@@ -9,7 +9,7 @@ deepspeed --master_port 29600 llava/train/train_mem.py \
     --deepspeed ./scripts/zero3.json \
     --model_name_or_path liuhaotian/$model_name \
     --version v1 \
-    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/rotation_merged.json \
+    --data_path /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data_$version.json \
     --image_folder / \
     --vision_tower openai/clip-vit-large-patch14-336 \
     --mm_projector_type mlp2x_gelu \

@@ -50,14 +50,13 @@ echo "working directory = "$SLURM_SUBMIT_DIR
 #now run normal bash commands
 #python your_command.py
 #sh /viscam/u/sunfanyun/GenLayout/scripts/train_data_preprocessing.sh $dataset
-echo "test"
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate layout
 echo "activated"
-
 export HOME=/svl/u/sunfanyun
+
+#cd $HOME/Genlayout
 #./scripts/v1_6/finetune_lora_llava_mistral.sh
-cd $HOME/Genlayout
 #./scripts/sbatch_train_data_preprocess.sh ProcThor
 ./scripts/v1_5/finetune_task_lora.sh
 
