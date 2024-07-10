@@ -18,16 +18,19 @@ def find_number(text):
 
 #model = "1.6"
 #version = "v2"
+data_file = "/viscam/projects/GenLayout/GenLayout_sun/data/3dfront_test.json"
 model = str(sys.argv[1])
-version = str(sys.argv[2])
+fine_tuned_checkpoint_path = str(sys.argv[2])
+#fine_tuned_checkpoint_path = "/viscam/projects/GenLayout/GenLayout_sun/third_party/LLaVa-1.6-ft/checkpoints"
+#version = str(sys.argv[2])
 
 if model == "1.5":
-    fine_tuned_model_path = f"/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/checkpoints/llava-v1.5-7b-task-lora_{version}"
+    fine_tuned_model_path = fine_tuned_checkpoint_path
     model_name =  get_model_name_from_path(fine_tuned_model_path)
     model_base = "liuhaotian/llava-v1.5-7b"
     #model_base = "liuhaotian/llava-v1.5-13b"
 elif model == "1.6":
-    fine_tuned_model_path = f"/svl/u/sunfanyun/GenLayout/third_party/LLaVa-1.6-ft/checkpoints/llava-v1.6-mistral-7b-llava-lora-mistral_{version}"
+    fine_tuned_model_path = fine_tuned_checkpoint_path
     model_name =  get_model_name_from_path(fine_tuned_model_path)
     model_base = "liuhaotian/llava-v1.6-mistral-7b"
     #model_base = "liuhaotian/llava-v1.6-34b"
@@ -47,12 +50,14 @@ tokenizer, model, image_processor, context_len = load_pretrained_model(
     model_base,
     model_name
 )
+print(context_len)
 print('pretrain model loaded')
+input()
 
 # Evaluation setup
 # load the json file /svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data.json
 #all_data = json.load(open("/svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/rotation_merged.json", "r"))
-all_data = json.load(open(f"/svl/u/sunfanyun/sceneVerse/preprocessed/ProcThor/all_data_{version}.json", "r"))
+all_data = json.load(open(data_file, "r"))
 initial_prompt = all_data[0]["conversations"][0]["value"]
 # ground_truth = all_data[i]["conversations"][1]["value"]
 
@@ -68,6 +73,26 @@ for i in tqdm(range(1000)):
     #if len(prompt) > 6000:
     #    continue
     # Set up evaluation arguments
+    # insert the following string in the prompt, right before the keyword LAYOUT_CRITERIA
+    simple_example = """An example output:
+# place the beds and the nightstands first
+solver.locate_grid(King_size_Bed_0, 6)
+solver.locate_grid(Nightstand_0, 5)
+solver.locate_grid(Nightstand_1, 3)
+solver.solve()
+solver.against_wall(jewelry_Armoire_0, wall_3)
+solver.locate_grid(jewelry_Armoire_0, 9)
+solver.locate_grid(Dining_Chair_0, 13)
+solver.locate_grid(Desk_0, 10)
+lver.solve()
+# place the ceiling lamps finally
+solver.locate_grid(Ceiling_Lamp_0, 10)
+solver.locate_grid(Ceiling_Lamp_1, 7)
+solver.locate_grid(Others_0, 16)
+solver.solve()
+"""
+    prompt = prompt.replace("LAYOUT CRITERIA", simple_example + "\n\n" + "LAYOU  CRITERIA")
+    prompt += "\nNow please write the contraint program for the scene in python!"
     args = type('Args', (), {
             #"model_path": fine_tuned_model_path,
             #"model_base": model_base,
@@ -83,11 +108,13 @@ for i in tqdm(range(1000)):
     })()
     # Perform evaluation with the fine-tuned model
     output = eval_model(args, tokenizer, model, image_processor)
-    print(output)
-    output = str(find_number(output))
-    assert type(output) == str
+    #print(output)
+    #output = str(find_number(output))
+    #assert type(output) == str
+    import pdb;pdb.set_trace()
     print('====================================')
     print(output)
+    print('====== ground truth ================')
     print(ground_truth)
     print('====================================')
 

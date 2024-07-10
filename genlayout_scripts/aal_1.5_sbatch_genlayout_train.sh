@@ -51,7 +51,7 @@ echo "working directory = "$SLURM_SUBMIT_DIR
 #python your_command.py
 #sh /viscam/u/sunfanyun/GenLayout/scripts/train_data_preprocessing.sh $dataset
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate layout
+conda activate llava
 echo "activated"
 export HOME=/svl/u/sunfanyun
 

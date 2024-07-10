@@ -2,21 +2,21 @@
 #all commands that start with SBATCH contain commands that are just used by SLURM for scheduling
 #################
 #partition name
-#SBATCH --partition=viscam
+#SBATCH --partition=aal
 #################
 #number of GPUs
-#SBATCH --gres=gpu:a6000:3
+#SBATCH --gres=gpu:l40s:6
 #SBATCH --cpus-per-task=4
-#SBATCH --account=viscam
+#SBATCH --account=aal
 #################
 #set a job name
-#SBATCH --job-name="v1.6 llava"
+#SBATCH --job-name="original_v1.6_llava"
 #################
 #a file for job output, you can check job progress, append the job ID with %j to make it unique
-#SBATCH --output=../slurm_stdout/%j.out
+#SBATCH --output=/sailhome/sunfanyun/slurm_out/%x.%j.out
 #################
 # a file for errors from the job
-#SBATCH --error=../slurm_stderr/%j.err
+#SBATCH --error=/sailhome/sunfanyun/slurm_out/%x.%j.err
 #################
 #time you think you need; default is 2 hours
 #format could be dd-hh:mm:ss, hh:mm:ss, mm:ss, or mm, 144
@@ -50,13 +50,56 @@ echo "working directory = "$SLURM_SUBMIT_DIR
 #now run normal bash commands
 #python your_command.py
 #sh /viscam/u/sunfanyun/GenLayout/scripts/train_data_preprocessing.sh $dataset
-echo "test"
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate layout
+export HOME=/viscam/projects/GenLayout
+source /viscam/projects/SceneAug/miniconda3/etc/profile.d/conda.sh
+conda activate llava
 echo "activated"
 
-export HOME=/svl/u/sunfanyun
-./scripts/v1_6/finetune_lora_llava_mistral.sh
+model_name=llava-v1.6-mistral-7b 
+version=constraint_vlm_v0
+
+working_directory=/viscam/projects/GenLayout/GenLayout_sun/third_party/LLaVa-1.6-ft/
+output_dir=$working_directory/checkpoints/$model_name-$version-finetune_task_lora
+data_path=/viscam/projects/GenLayout/GenLayout_sun/data/3dfront_for_vlm_all_v0_cleaned.json
+cd $working_directory
+
+deepspeed --master_port 29700 llava/train/train_mem.py \
+    --lora_enable True --lora_r 16 --lora_alpha 32 --mm_projector_lr 2e-5 \
+    --deepspeed ./scripts/zero3.json \
+    --model_name_or_path liuhaotian/$model_name \
+    --version mistral_instruct \
+    --data_path $data_path \
+    --image_folder / \
+    --vision_tower openai/clip-vit-large-patch14-336 \
+    --mm_projector_type mlp2x_gelu \
+    --mm_vision_select_layer -2 \
+    --mm_use_im_start_end False \
+    --mm_use_im_patch_token False \
+    --mm_patch_merge_type spatial_unpad \
+    --image_aspect_ratio anyres \
+    --group_by_modality_length False \
+    --bf16 False \
+    --fp16 True \
+    --output_dir $output_dir \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 4 \
+    --per_device_eval_batch_size 1 \
+    --gradient_accumulation_steps 1 \
+    --evaluation_strategy "no" \
+    --save_strategy "steps" \
+    --save_steps 500 \
+    --save_total_limit 5 \
+    --learning_rate 2e-5 \
+    --weight_decay 0. \
+    --warmup_ratio 0.05 \
+    --lr_scheduler_type "cosine" \
+    --logging_steps 1 \
+    --tf32 True \
+    --model_max_length 4096 \
+    --gradient_checkpointing True \
+    --dataloader_num_workers 4 \
+    --lazy_preprocess True \
+    --report_to wandb \
 
 echo "Done"
 exit 0
