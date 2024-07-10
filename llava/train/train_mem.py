@@ -1,3 +1,10 @@
+import os
+import sys
+# print
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print(dir_path)
+sys.path.append("/viscam/projects/GenLayout/GenLayout_sun/third_party/LLaVa-1.6-ft/")
+
 from llava.train.train import train
 import torch.distributed as dist
 

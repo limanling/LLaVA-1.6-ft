@@ -10,13 +10,13 @@
 #SBATCH --account=viscam
 #################
 #set a job name
-#SBATCH --job-name="original_v1.5_llava"
+#SBATCH --job-name="v1.5 llava"
 #################
 #a file for job output, you can check job progress, append the job ID with %j to make it unique
-#SBATCH --output=/viscam/projects/GenLayout/slurm_out/%x.%j.out
+#SBATCH --output=../slurm_stdout/%j.out
 #################
 # a file for errors from the job
-#SBATCH --error=/viscam/projects/GenLayout/slurm_out/%x.%j.out
+#SBATCH --error=../slurm_stderr/%j.out
 #################
 #time you think you need; default is 2 hours
 #format could be dd-hh:mm:ss, hh:mm:ss, mm:ss, or mm, 144
@@ -37,7 +37,9 @@
 #################
 # Have SLURM send you an email when the job ends or fails, careful, the email could end up in your clutter folder
 # Also, if you submit hundreds of jobs at once you will get hundreds of emails.
+#SBATCH --mail-type=END,FAIL # notifications for job done & fail
 # Remember to change this to your email
+#SBATCH --mail-user=fanyun@stanford.edu
 # list out some useful information
 echo "SLURM_JOBID="$SLURM_JOBID
 echo "SLURM_JOB_NAME="$SLURM_JOB_NAME
@@ -46,54 +48,14 @@ echo "SLURM_NNODES"=$SLURM_NNODES
 echo "SLURMTMPDIR="$SLURMTMPDIR
 echo "working directory = "$SLURM_SUBMIT_DIR
 #now run normal bash commands
-####### USE ABSOLUTE PATHS #######
-export HOME=/viscam/projects/GenLayout
-working_directory=/viscam/projects/GenLayout/GenLayout_sun/third_party/LLaVa-1.6-ft/
-output_dir=$working_directory/checkpoints/$model_name-$version-finetune_task_lora
-data_path=/viscam/projects/GenLayout/GenLayout_sun/data/3d_front_all_v0.json 
-deepspeed_script_path=$working_directory/scripts/zero3.json
-cd $working_directory
+#python your_command.py
+#sh /viscam/u/sunfanyun/GenLayout/scripts/train_data_preprocessing.sh $dataset
+source /sailhome/sunfanyun/miniconda3/etc/profile.d/conda.sh
+conda activate layout
+echo "activated"
+export HOME=/svl/u/sunfanyun
 
-model_name=llava-v1.5-7b
-version=constraint_vlm_v0
-
-/viscam/projects/GenLayout/miniconda3/envs/layout/bin/deepspeed \
-    --master_port 29600 llava/train/train_mem.py \
-    --lora_enable True --lora_r 128 --lora_alpha 256 --mm_projector_lr 2e-5 \
-    --deepspeed $deepspeed_script_path \
-    --model_name_or_path liuhaotian/$model_name \
-    --version v1 \
-    --data_path $data_path \
-    --image_folder / \
-    --vision_tower openai/clip-vit-large-patch14-336 \
-    --mm_projector_type mlp2x_gelu \
-    --mm_vision_select_layer -2 \
-    --mm_use_im_start_end False \
-    --mm_use_im_patch_token False \
-    --image_aspect_ratio pad \
-    --group_by_modality_length True \
-    --bf16 True \
-    --output_dir $output_dir \
-    --num_train_epochs 1 \
-    --per_device_train_batch_size 16 \
-    --per_device_eval_batch_size 4 \
-    --gradient_accumulation_steps 1 \
-    --evaluation_strategy "no" \
-    --save_strategy "steps" \
-    --save_steps 50000 \
-    --save_total_limit 1 \
-    --learning_rate 2e-4 \
-    --weight_decay 0. \
-    --warmup_ratio 0.03 \
-    --lr_scheduler_type "cosine" \
-    --logging_steps 1 \
-    --tf32 True \
-    --model_max_length 2048 \
-    --gradient_checkpointing True \
-    --dataloader_num_workers 4 \
-    --lazy_preprocess True \
-    --report_to wandb
-
+./scripts/v1_5/finetune_task_lora.sh
 
 echo "Done"
 exit 0
